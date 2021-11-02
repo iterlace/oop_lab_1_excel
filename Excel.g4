@@ -4,7 +4,8 @@ grammar Excel;
  * Parser Rules
  */
 
-expr: '!' expr                                 # NotExpr
+expr:
+      '!' expr                                 # NotExpr
     | op=('++'|'--') expr                      # IncDecExpr
     | function                                 # FunExpr
     | left=expr op=('*'|'/') right=expr        # InfixExpr
