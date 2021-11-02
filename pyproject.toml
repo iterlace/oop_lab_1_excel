@@ -1,0 +1,45 @@
+[tool.poetry]
+name = "excel_lab_qt"
+version = "0.1.0"
+description = ""
+authors = ["Evgeniy Goncharuck <iterlace@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+PyQt6 = "^6.2.1"
+tatsu = "^5.6.1"
+parsimonious = "^0.8.1"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.4"
+black = "^21.8b0"
+isort = "^5.9.3"
+autoflake = "^1.4"
+flake8 = "^3.9.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[flake8]
+max-line-length = 88
+exclude = [".git", "__pycache__", "__init__.py", ".mypy_cache", "migrations", ".pytest_cache", "venv", ".venv"]
+
+[tool.isort]
+profile = "black"
+src_paths = ["src"]
+sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
+line_length = 88
+group_by_package = true
+skip_glob = "*/alembic/*,*/venv/*,*/.venv/*,*/__init__.py"
+
+[tool.black]
+exclude = ".venv|venv|.git|__pycache__|__init__.py|.mypy_cache|.pytest_cache|migrations"
+line_length = 88
+
+[tool.pytest.ini_options]
+python_files = "test_*.py"
+log_cli = true
+log_level = "DEBUG"
+testpaths = ["src"]
+
