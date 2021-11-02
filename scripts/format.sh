@@ -1,12 +1,12 @@
 #!/bin/bash
 
 echo "Running autoflake..."
-autoflake --remove-all-unused-imports --recursive --in-place srv --exclude=__init__.py
+autoflake --remove-all-unused-imports --recursive --in-place src --exclude=__init__.py
 echo "\n"
 
 echo "Running black"
-black srv
+black src
 echo "\n"
 
 echo "Running isort"
-isort srv
+isort src
