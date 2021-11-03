@@ -39,6 +39,11 @@ class ExcelVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by ExcelParser#CellRefExpr.
+    def visitCellRefExpr(self, ctx:ExcelParser.CellRefExprContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by ExcelParser#function.
     def visitFunction(self, ctx:ExcelParser.FunctionContext):
         return self.visitChildren(ctx)
@@ -51,11 +56,6 @@ class ExcelVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by ExcelParser#function_arg.
     def visitFunction_arg(self, ctx:ExcelParser.Function_argContext):
-        return self.visitChildren(ctx)
-
-
-    # Visit a parse tree produced by ExcelParser#object_name.
-    def visitObject_name(self, ctx:ExcelParser.Object_nameContext):
         return self.visitChildren(ctx)
 
 

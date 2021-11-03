@@ -62,6 +62,15 @@ class ExcelListener(ParseTreeListener):
         pass
 
 
+    # Enter a parse tree produced by ExcelParser#CellRefExpr.
+    def enterCellRefExpr(self, ctx:ExcelParser.CellRefExprContext):
+        pass
+
+    # Exit a parse tree produced by ExcelParser#CellRefExpr.
+    def exitCellRefExpr(self, ctx:ExcelParser.CellRefExprContext):
+        pass
+
+
     # Enter a parse tree produced by ExcelParser#function.
     def enterFunction(self, ctx:ExcelParser.FunctionContext):
         pass
@@ -86,15 +95,6 @@ class ExcelListener(ParseTreeListener):
 
     # Exit a parse tree produced by ExcelParser#function_arg.
     def exitFunction_arg(self, ctx:ExcelParser.Function_argContext):
-        pass
-
-
-    # Enter a parse tree produced by ExcelParser#object_name.
-    def enterObject_name(self, ctx:ExcelParser.Object_nameContext):
-        pass
-
-    # Exit a parse tree produced by ExcelParser#object_name.
-    def exitObject_name(self, ctx:ExcelParser.Object_nameContext):
         pass
 
 

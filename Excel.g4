@@ -8,6 +8,7 @@ expr:
       '!' expr                                 # NotExpr
     | op=('++'|'--') expr                      # IncDecExpr
     | function                                 # FunExpr
+    | CELL_NAME                                # CellRefExpr
     | left=expr op=('*'|'/') right=expr        # InfixExpr
     | left=expr op=('+'|'-') right=expr        # InfixExpr
     | left=expr op=('>'|'<'|'=') right=expr    # InfixExpr
@@ -15,11 +16,9 @@ expr:
     | '(' expr ')'                             # ParenExpr
     ;
 
-function:       name=object_name '(' args=function_args ')';
-function_args:  (function_arg (',' function_arg)*)?;
-function_arg:   expr;
-
-object_name: CHAR (CHAR | INT | '_')* ;
+function        :  name=OBJECT_NAME '(' args=function_args ')';
+function_args   :  (function_arg (',' function_arg)*)?;
+function_arg    :  expr;
 
 /*
  * Lexer Rules
@@ -34,3 +33,9 @@ CHAR       : [a-zA-Z] ;
 UPPERCHAR  : [A-Z] ;
 LOWERCHAR  : [a-z] ;
 WHITESPACE : [ \t]+ -> skip ;
+
+// cell reference, e.g. F4 or A3
+CELL_NAME   : UPPERCHAR DIGIT;
+
+// actually only function is called an object
+OBJECT_NAME: CHAR (CHAR | INT | '_')* ;
