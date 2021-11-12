@@ -4,8 +4,7 @@ grammar Excel;
  * Parser Rules
  */
 
-expr:
-      '!' expr                                 # NotExpr
+expr: '!' expr                                 # NotExpr
     | op=('++'|'--') expr                      # IncDecExpr
     | function                                 # FunExpr
     | CELL_NAME                                # CellRefExpr
@@ -27,8 +26,8 @@ function_arg    :  expr;
 fragment NATURAL    : [1-9] ;
 fragment DIGIT      : [0-9] ;
 
-INT        : DIGIT+ ;
-FLOAT      : DIGIT+ ([.] DIGIT+)? ;
+INT        : '-'? DIGIT+ ;
+FLOAT      : '-'? DIGIT+ ([.] DIGIT+)? ;
 CHAR       : [a-zA-Z] ;
 UPPERCHAR  : [A-Z] ;
 LOWERCHAR  : [a-z] ;
