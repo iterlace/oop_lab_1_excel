@@ -34,7 +34,7 @@ LOWERCHAR  : [a-z] ;
 WHITESPACE : [ \t]+ -> skip ;
 
 // cell reference, e.g. F4 or A3
-CELL_NAME   : UPPERCHAR DIGIT;
+CELL_NAME   : UPPERCHAR+ DIGIT+;
 
 // actually only function is called an object
 OBJECT_NAME: CHAR (CHAR | INT | '_')* ;

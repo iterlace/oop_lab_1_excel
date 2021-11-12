@@ -1,5 +1,3 @@
-from typing import List, Any
-
 from table.types import Number
 
 

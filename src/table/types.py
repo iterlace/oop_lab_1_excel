@@ -1,4 +1,4 @@
-from typing import Union, List, Tuple, Optional, Any, Final, NewType, TypeVar
+from typing import NewType, Tuple, Union
 
 Formula = str
 CalculationError = NewType("CalculationError", None)

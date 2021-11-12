@@ -1,11 +1,13 @@
-from typing import Union, List, Tuple, Optional, Any, Final, NewType, TypeVar
 import logging
+from typing import List
 
 from antlr4 import CommonTokenStream, InputStream
 
 from dist.ExcelLexer import ExcelLexer
 from dist.ExcelParser import ExcelParser
 from table.visitor import ExcelVisitor
+
+from .types import CalculatedValue, CalculationError, CellIdx, CellRef, Formula
 
 # 1,5,6,8,10
 # +, -, *, /
@@ -20,13 +22,11 @@ from table.visitor import ExcelVisitor
 # ++(!((1+1)*(1)*min(5, 4)) > (1) = max(A1*1.0+1, 5)*2)
 # ++(!((1+1)*(1)*min(5, 4)) > (1))
 
-from .types import Formula, CalculationError, CalculatedValue, CellRef, CellIdx
 
 logger = logging.getLogger(__name__)
 
 
 class Table:
-
     def __init__(self, cols: List[str], rows: List[str]):
         self.cols = cols.copy()
         self.rows = rows.copy()

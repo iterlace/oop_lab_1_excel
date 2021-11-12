@@ -1,7 +1,5 @@
-from typing import Tuple, Optional, List
 import re
-
-from antlr4 import *
+from typing import Tuple
 
 from dist.ExcelParser import ExcelParser
 from dist.ExcelVisitor import ExcelVisitor as GeneratedVisitor
@@ -9,7 +7,6 @@ from table.functions import FunctionExecutor
 
 
 class ExcelVisitor(GeneratedVisitor):
-
     def __init__(self, table):
         self.table = table
         super(ExcelVisitor, self).__init__()

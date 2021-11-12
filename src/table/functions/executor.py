@@ -1,10 +1,9 @@
-from typing import List, Any
+from typing import Any, List
 
-from .exceptions import FunctionNotFound, FunctionArgsInvalid
+from .exceptions import FunctionArgsInvalid, FunctionNotFound
 
 
 class FunctionExecutor:
-
     @staticmethod
     def execute(name: str, args: List[Any]):
         from table.functions.funcs import functions
