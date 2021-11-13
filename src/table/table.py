@@ -1,5 +1,6 @@
 import logging
 from typing import List
+import re
 
 from antlr4 import CommonTokenStream, InputStream
 
@@ -16,14 +17,13 @@ from .types import CalculatedValue, CalculationError, CellIdx, CellRef, Formula
 # =, <, >
 # !  (not)
 
-#     expr = "3 + 5 * ( 10 - 20 )"
-#     expr2 = "++(!((1+1)*(1)*min()) > (1) = max(rand()*1.0+1, 5)*2)"
-
 # ++(!((1+1)*(1)*min(5, 4)) > (1) = max(A1*1.0+1, 5)*2)
 # ++(!((1+1)*(1)*min(5, 4)) > (1))
 
 
 logger = logging.getLogger(__name__)
+
+cell_ref_mask = re.compile(r"^([A-Z]*)(\d*)$")
 
 
 class Table:
@@ -71,6 +71,14 @@ class Table:
         return self.get_calculated(*self.cell_index(cell))
 
     def cell_index(self, cell: CellRef) -> CellIdx:
-        w = self.rows.index(cell[0])
-        h = self.cols.index(cell[1])
+        if isinstance(cell, tuple):
+            w = self.cols.index(cell[0])
+            h = self.rows.index(cell[1])
+        else:
+            match = cell_ref_mask.match(cell)
+            if not match:
+                raise ValueError(f"Cell {cell} has invalid format")
+            w = self.cols.index(match.group(1))
+            h = self.rows.index(match.group(2))
         return h, w
+

@@ -59,10 +59,7 @@ class ExcelVisitor(GeneratedVisitor):
     # Visit a parse tree produced by ExcelParser#CellRefExpr.
     def visitCellRefExpr(self, ctx: ExcelParser.CellRefExprContext):
         cell = ctx.CELL_NAME().getText()
-        match = re.match(r"^([A-Z]*)(\d*)$", cell)
-        assert match, "Cell reference is invalid"
-
-        h, w = self.table.cell_index((match.group(1), match.group(2)))
+        h, w = self.table.cell_index(cell)
         return self.table.get_calculated(h, w)
 
     # Visit a parse tree produced by ExcelParser#function.
