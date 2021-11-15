@@ -4,6 +4,20 @@ import json
 from .table import Table
 
 
+class SerializationError(Exception):
+
+    def __init__(self, msg: str):
+        self.message = msg
+        super(SerializationError, self).__init__(self.message)
+
+
+class DeserializationError(Exception):
+
+    def __init__(self, msg: str):
+        self.message = msg
+        super(DeserializationError, self).__init__(self.message)
+
+
 class Serializer:
 
     @classmethod
@@ -12,7 +26,11 @@ class Serializer:
             serialized = json.loads(f.read())
         table = Table(cols, rows)
         for cell, formula in serialized.items():
-            h, w = table.cell_index(cell)
+            try:
+                h, w = table.cell_index(cell)
+            except ValueError:
+                raise DeserializationError(f"Cell \"{cell}\" isn't present in the table! It either "
+                                           f"has invalid format or goes out of table bounds.")
             table.set(h, w, formula)
         return table
 

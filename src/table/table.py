@@ -72,13 +72,19 @@ class Table:
 
     def cell_index(self, cell: CellRef) -> CellIdx:
         if isinstance(cell, tuple):
-            w = self.cols.index(cell[0])
-            h = self.rows.index(cell[1])
+            try:
+                w = self.cols.index(cell[0])
+                h = self.rows.index(cell[1])
+            except IndexError:
+                raise ValueError(f"Cell {cell} isn't present")
         else:
             match = cell_ref_mask.match(cell)
             if not match:
                 raise ValueError(f"Cell {cell} has invalid format")
-            w = self.cols.index(match.group(1))
-            h = self.rows.index(match.group(2))
+            try:
+                w = self.cols.index(match.group(1))
+                h = self.rows.index(match.group(2))
+            except IndexError:
+                raise ValueError(f"Cell {cell} isn't present")
         return h, w
 

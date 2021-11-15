@@ -1,11 +1,10 @@
 import functools
 import string
 
-from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem
-
+from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QFileDialog, QErrorMessage, QMessageBox
 from table import Table
 from table.types import CalculatedValue, CalculationError
-from table.serializer import Serializer
+from table.serializer import Serializer, SerializationError, DeserializationError
 
 
 class TableWidget(QTableWidget):
@@ -27,15 +26,36 @@ class TableWidget(QTableWidget):
         self.currentCellChanged.connect(self.on_cell_change)
 
     def on_save(self):
-        Serializer.save(self.table, "/tmp/test.json")
+        filepath, _ = QFileDialog().getSaveFileName(
+            parent=self,
+            caption="Select a save path",
+            filter="JSON (*.json)",
+        )
+        if not filepath:
+            return
+
+        Serializer.save(self.table, filepath)
 
     def on_open(self):
-        table = Serializer.load("/tmp/test.json", self.cols, self.rows)
-        for row_idx, col in enumerate(table.formula_matrix):
-            for col_idx, value in enumerate(col):
-                item = QTableWidgetItem()
-                item.setText(value)
-                self.setItem(row_idx, col_idx, item)
+        filepath, _ = QFileDialog().getOpenFileName(
+            parent=self,
+            caption="Select a .json dump",
+            filter="JSON (*.json)",
+        )
+        if not filepath:
+            return
+
+        try:
+            table = Serializer.load(filepath, self.cols, self.rows)
+        except DeserializationError as e:
+            QMessageBox.critical(self, "Error loading table", e.message),
+            return
+        else:
+            for row_idx, col in enumerate(table.formula_matrix):
+                for col_idx, value in enumerate(col):
+                    item = QTableWidgetItem()
+                    item.setText(value)
+                    self.setItem(row_idx, col_idx, item)
 
     def on_enter(self, x, y):
         value = self.table.get_formula(x, y)
