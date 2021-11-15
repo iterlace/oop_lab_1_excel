@@ -34,7 +34,11 @@ class TableWidget(QTableWidget):
         if not filepath:
             return
 
-        Serializer.save(self.table, filepath)
+        try:
+            Serializer.save(self.table, filepath)
+        except SerializationError as e:
+            QMessageBox.critical(self, "Error saving table", e.message),
+            return
 
     def on_open(self):
         filepath, _ = QFileDialog().getOpenFileName(

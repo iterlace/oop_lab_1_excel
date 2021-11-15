@@ -1,7 +1,10 @@
 from typing import List, Tuple, Dict, Any, Optional
 import json
+import logging
 
 from .table import Table
+
+logger = logging.getLogger(__name__)
 
 
 class SerializationError(Exception):
@@ -36,13 +39,17 @@ class Serializer:
 
     @classmethod
     def save(cls, table: Table, filename: str) -> None:
-        serialized: Dict[str, str] = {}
-        for row_name, col in zip(table.rows, table.formula_matrix):
-            for col_name, value in zip(table.cols, col):
-                if not value:
-                    continue
-                cell = col_name+row_name
-                serialized[cell] = value
+        try:
+            serialized: Dict[str, str] = {}
+            for row_name, col in zip(table.rows, table.formula_matrix):
+                for col_name, value in zip(table.cols, col):
+                    if not value:
+                        continue
+                    cell = col_name+row_name
+                    serialized[cell] = value
 
-        with open(filename, "w+") as f:
-            f.write(json.dumps(serialized))
+            with open(filename, "w+") as f:
+                f.write(json.dumps(serialized))
+        except Exception as e:
+            logger.exception(f"Error saving table to {filename}")
+            raise SerializationError("Unknown error")
