@@ -1,6 +1,6 @@
-from typing import List, Tuple, Dict, Any, Optional
 import json
 import logging
+from typing import Dict, List
 
 from .table import Table
 
@@ -8,21 +8,18 @@ logger = logging.getLogger(__name__)
 
 
 class SerializationError(Exception):
-
     def __init__(self, msg: str):
         self.message = msg
         super(SerializationError, self).__init__(self.message)
 
 
 class DeserializationError(Exception):
-
     def __init__(self, msg: str):
         self.message = msg
         super(DeserializationError, self).__init__(self.message)
 
 
 class Serializer:
-
     @classmethod
     def load(cls, filename: str, cols: List[str], rows: List[str]) -> Table:
         with open(filename, "r") as f:
@@ -32,8 +29,10 @@ class Serializer:
             try:
                 h, w = table.cell_index(cell)
             except ValueError:
-                raise DeserializationError(f"Cell \"{cell}\" isn't present in the table! It either "
-                                           f"has invalid format or goes out of table bounds.")
+                raise DeserializationError(
+                    f'Cell "{cell}" isn\'t present in the table! It either '
+                    f"has invalid format or goes out of table bounds."
+                )
             table.set(h, w, formula)
         return table
 
@@ -45,7 +44,7 @@ class Serializer:
                 for col_name, value in zip(table.cols, col):
                     if not value:
                         continue
-                    cell = col_name+row_name
+                    cell = col_name + row_name
                     serialized[cell] = value
 
             with open(filename, "w+") as f:

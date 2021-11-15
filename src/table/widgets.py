@@ -1,10 +1,10 @@
-import functools
 import string
 
-from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem, QFileDialog, QErrorMessage, QMessageBox
+from PyQt6.QtWidgets import QFileDialog, QMessageBox, QTableWidget, QTableWidgetItem
+
 from table import Table
+from table.serializer import DeserializationError, SerializationError, Serializer
 from table.types import CalculatedValue, CalculationError
-from table.serializer import Serializer, SerializationError, DeserializationError
 
 
 class TableWidget(QTableWidget):

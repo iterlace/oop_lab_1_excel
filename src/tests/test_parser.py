@@ -4,10 +4,9 @@ from antlr4 import CommonTokenStream, InputStream
 
 from dist.ExcelLexer import ExcelLexer
 from dist.ExcelParser import ExcelParser
-from table.visitor import ExcelVisitor
-
-from table.types import CalculatedValue, CalculationError, CellIdx, CellRef, Formula
 from table.table import Table
+from table.types import CalculatedValue
+from table.visitor import ExcelVisitor
 
 
 @pytest.fixture(scope="function")
@@ -27,7 +26,6 @@ def table(cols, rows):
 
 
 class TestParser:
-
     @staticmethod
     def calc(table: Table, formula: str) -> CalculatedValue:
         data = InputStream(formula)
@@ -63,4 +61,3 @@ class TestParser:
         assert self.calc(table, "!5") == 0
         assert self.calc(table, "!1") == 0
         assert self.calc(table, "!(-1)") == 0
-

@@ -1,6 +1,6 @@
 import logging
-from typing import List
 import re
+from typing import List
 
 from antlr4 import CommonTokenStream, InputStream
 
@@ -87,4 +87,3 @@ class Table:
             except IndexError:
                 raise ValueError(f"Cell {cell} isn't present")
         return h, w
-

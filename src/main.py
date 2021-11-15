@@ -1,22 +1,13 @@
 # This Python file uses the following encoding: utf-8
-import io
 import sys
-from typing import Iterable
-import time
-import functools
-import string
 
-from PyQt6.QtWidgets import QMainWindow, QMenuBar, QApplication, QWidget, QTableWidget, \
-                            QTableWidgetItem, QVBoxLayout, QMenu
-from PyQt6.QtGui import QFont, QAction, QKeyEvent, QAction
-from PyQt6.QtCore import QPoint, QModelIndex, pyqtBoundSignal, QEvent
-from antlr4 import *
+from PyQt6.QtGui import QAction
+from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu
 
 from table.widgets import TableWidget
 
 
 class MainWindow(QMainWindow):
-
     def __init__(self):
         super(MainWindow, self).__init__()
         self.table_widget = TableWidget()

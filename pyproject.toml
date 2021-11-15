@@ -22,7 +22,7 @@ build-backend = "poetry.core.masonry.api"
 
 [flake8]
 max-line-length = 88
-exclude = [".git", "__pycache__", "__init__.py", ".mypy_cache", "migrations", ".pytest_cache", "venv", ".venv"]
+exclude = [".git", "__pycache__", "__init__.py", ".mypy_cache", "migrations", ".pytest_cache", "venv", ".venv", "dist"]
 
 [tool.isort]
 profile = "black"
@@ -30,10 +30,10 @@ src_paths = ["src"]
 sections = ["FUTURE", "STDLIB", "THIRDPARTY", "FIRSTPARTY", "LOCALFOLDER"]
 line_length = 88
 group_by_package = true
-skip_glob = "*/alembic/*,*/venv/*,*/.venv/*,*/__init__.py"
+skip_glob = "*/alembic/*,*/venv/*,*/.venv/*,*/__init__.py,*/dist/*"
 
 [tool.black]
-exclude = ".venv|venv|.git|__pycache__|__init__.py|.mypy_cache|.pytest_cache|migrations"
+exclude = ".venv|venv|.git|__pycache__|__init__.py|.mypy_cache|.pytest_cache|migrations|dist"
 line_length = 88
 
 [tool.pytest.ini_options]
