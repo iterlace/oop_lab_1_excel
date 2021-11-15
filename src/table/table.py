@@ -20,7 +20,7 @@ from .types import CalculatedValue, CalculationError, CellIdx, CellRef, Formula
 # ++(!((1+1)*(1)*min(5, 4)) > (1) = max(A1*1.0+1, 5)*2)
 # ++(!((1+1)*(1)*min(5, 4)) > (1))
 
-
+__all__ = ["Table"]
 logger = logging.getLogger(__name__)
 
 cell_ref_mask = re.compile(r"^([A-Z]*)(\d*)$")
