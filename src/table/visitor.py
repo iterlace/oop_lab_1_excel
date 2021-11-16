@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Union
 
 from dist.ExcelParser import ExcelParser
 from dist.ExcelVisitor import ExcelVisitor as GeneratedVisitor
@@ -21,7 +21,7 @@ class ExcelVisitor(GeneratedVisitor):
         return int(not bool(value))
 
     # Visit a parse tree produced by ExcelParser#IncDecExpr.
-    def visitIncDecExpr(self, ctx: ExcelParser.IncDecExprContext) -> Tuple[int, float]:
+    def visitIncDecExpr(self, ctx: ExcelParser.IncDecExprContext) -> Union[int, float]:
         value = self.visit(ctx.expr())
         op = ctx.op.text
         operation = {
