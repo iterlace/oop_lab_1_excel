@@ -4,8 +4,13 @@
 
 ### 2. Initialize virtual environment && install dependencies
 ```bash
-python3 -m pip install poerty
-poetry install
+python3 -m pip install poetry
+python3 -m poetry install
 
-poetry shell
+python3 -m poetry shell
+```
+
+### 3. Run tests
+```bash
+pytest
 ```
