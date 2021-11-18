@@ -37,7 +37,7 @@ class TableWidget(QTableWidget):
         try:
             Serializer.save(self.table, filepath)
         except SerializationError as e:
-            QMessageBox.critical(self, "Error saving table", e.message),
+            QMessageBox.critical(self, "Error saving table", e.message)
             return
 
     def on_open(self):
@@ -52,7 +52,7 @@ class TableWidget(QTableWidget):
         try:
             table = Serializer.load(filepath, self.cols, self.rows)
         except DeserializationError as e:
-            QMessageBox.critical(self, "Error loading table", e.message),
+            QMessageBox.critical(self, "Error loading table", e.message)
             return
         else:
             for row_idx, col in enumerate(table.formula_matrix):
