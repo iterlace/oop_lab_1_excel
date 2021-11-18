@@ -3,6 +3,7 @@ import re
 from typing import List
 
 from antlr4 import CommonTokenStream, InputStream
+from antlr4.error.ErrorListener import ErrorListener
 
 from dist.ExcelLexer import ExcelLexer
 from dist.ExcelParser import ExcelParser
@@ -36,10 +37,16 @@ class Table:
         self.calculated_matrix = [[None for _ in rows] for _ in cols]
 
     def calculate(self, formula: Formula) -> CalculatedValue:
+        def recover(exc):
+            raise exc
+
         try:
             data = InputStream(formula)
             # lexer
             lexer = ExcelLexer(data)
+            lexer.recover = recover
+            lexer.removeErrorListeners()
+            lexer.addErrorListener(ErrorListener())
             stream = CommonTokenStream(lexer)
             # parser
             parser = ExcelParser(stream)
