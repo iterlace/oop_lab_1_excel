@@ -33,13 +33,36 @@ class MainWindow(QMainWindow):
         self.about_action.setText("&Про додаток")
         self.about_action.triggered.connect(self.on_about)
 
+        self.add_row_action = QAction(self.table_widget)
+        self.add_row_action.setText("&[+] рядок")
+        self.add_row_action.triggered.connect(self.table_widget.on_add_row)
+
+        self.add_col_action = QAction(self.table_widget)
+        self.add_col_action.setText("&[+] колонка")
+        self.add_col_action.triggered.connect(self.table_widget.on_add_column)
+
+        self.remove_row_action = QAction(self.table_widget)
+        self.remove_row_action.setText("&[-] рядок")
+        self.remove_row_action.triggered.connect(self.table_widget.on_remove_row)
+
+        self.remove_col_action = QAction(self.table_widget)
+        self.remove_col_action.setText("&[-] колонка")
+        self.remove_col_action.triggered.connect(self.table_widget.on_remove_column)
+
     def init_menubar(self):
         menubar = self.menuBar()
+
         file_menu = QMenu("&Файл", self)
         menubar.addMenu(file_menu)
-
         file_menu.addAction(self.open_action)
         file_menu.addAction(self.save_action)
+
+        table_menu = QMenu("&Таблиця", self)
+        menubar.addMenu(table_menu)
+        table_menu.addAction(self.add_col_action)
+        table_menu.addAction(self.remove_col_action)
+        table_menu.addAction(self.add_row_action)
+        table_menu.addAction(self.remove_row_action)
 
         file_menu = QMenu("&Допомога", self)
         menubar.addMenu(file_menu)

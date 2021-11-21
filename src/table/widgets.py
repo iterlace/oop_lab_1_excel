@@ -1,18 +1,20 @@
 import string
+import functools
 
 from PyQt6.QtWidgets import QFileDialog, QMessageBox, QTableWidget, QTableWidgetItem
 
 from table import Table
 from table.serializer import DeserializationError, SerializationError, Serializer
 from table.types import CalculatedValue, CalculationError
+from table.utils import cols_generator, int_to_col, rows_generator
 
 
 class TableWidget(QTableWidget):
     def __init__(self):
         super(TableWidget, self).__init__()
 
-        self.cols = list(string.ascii_uppercase)
-        self.rows = [str(i) for i in range(1, 101)]
+        self.cols = cols_generator(26)
+        self.rows = rows_generator(100)
         self.table = Table(self.cols, self.rows)
 
         self.setRowCount(len(self.rows))
@@ -24,6 +26,20 @@ class TableWidget(QTableWidget):
         self.cellDoubleClicked.connect(self.on_enter)
         self.itemChanged.connect(self.on_change)
         self.currentCellChanged.connect(self.on_cell_change)
+        self._set_debug_callbacks()
+
+    def _set_debug_callbacks(self):
+        actions = [i for i in dir(self)
+                   if "signal" in type(getattr(self, i)).__name__.lower()]
+        for action in actions:
+            def l(__action):
+                @functools.wraps(l)
+                def inner(*args, **kwargs):
+                    print(__action, args, kwargs)
+
+                return inner
+
+            getattr(self, action).connect(l(action))
 
     def on_save(self):
         filepath, _ = QFileDialog().getSaveFileName(
@@ -61,32 +77,75 @@ class TableWidget(QTableWidget):
                     item.setText(value)
                     self.setItem(row_idx, col_idx, item)
 
-    def on_enter(self, x, y):
-        value = self.table.get_formula(x, y)
-        if item := self.item(x, y):
+    def on_enter(self, row, col):
+        value = self.table.get_formula(col, row)
+        if item := self.item(row, col):
             self.set(item, value)
 
     def on_change(self, item: QTableWidgetItem):
         value = item.text()
         if not value:
             return
-        h, w = item.row(), item.column()
-        result = self.table.set(h, w, value)
+        col, row = item.column(), item.row()
+        result = self.table.set(col, row, value)
         self.set(item, self.represent(result))
 
-    def on_cell_change(self, new_h, new_w, old_h, old_w):
-        old_item = self.item(old_h, old_w)
+    def on_cell_change(self, new_row, new_col, old_row, old_col):
+        old_item = self.item(old_row, old_col)
         if not old_item:
             return
         if not old_item.text():
             return
         # re-calculate the cell
         result = self.table.set(
-            old_h,
-            old_w,
-            self.table.get_formula(old_h, old_w),
+            old_col,
+            old_row,
+            self.table.get_formula(old_col, old_row),
         )
         self.set(old_item, self.represent(result))
+
+    def resize_table(self, new_cols, new_rows):
+        table = Table(new_cols, new_rows)
+        for col_id, col in enumerate(self.table.formula_matrix):
+            for row_id, value in enumerate(col):
+                print(col_id, row_id, value)
+                try:
+                    table.set(col_id, row_id, value)
+                except IndexError:
+                    continue
+        self.table = table
+
+    def on_add_column(self):
+        columns = cols_generator(len(self.cols) + 1)
+        self.setColumnCount(len(columns))
+        self.setHorizontalHeaderLabels(columns)
+        self.resize_table(columns, self.rows)
+        self.cols = columns
+
+    def on_add_row(self):
+        rows = rows_generator(len(self.rows) + 1)
+        self.setRowCount(len(rows))
+        self.setVerticalHeaderLabels(rows)
+        self.resize_table(rows, self.cols)
+        self.rows = rows
+
+    def on_remove_column(self):
+        if len(self.cols) <= 1:
+            return
+        columns = cols_generator(len(self.cols) - 1)
+        self.setColumnCount(len(columns))
+        self.setHorizontalHeaderLabels(columns)
+        self.resize_table(columns, self.rows)
+        self.cols = columns
+
+    def on_remove_row(self):
+        if len(self.rows) <= 1:
+            return
+        rows = rows_generator(len(self.rows) - 1)
+        self.setRowCount(len(rows))
+        self.setVerticalHeaderLabels(rows)
+        self.resize_table(self.cols, rows)
+        self.rows = rows
 
     def set(self, item: QTableWidgetItem, value: str):
         self.blockSignals(True)

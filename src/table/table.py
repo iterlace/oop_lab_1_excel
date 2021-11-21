@@ -34,7 +34,7 @@ class Table:
         self.ncols = len(cols)
         self.nrows = len(rows)
         self.formula_matrix = [["" for _ in rows] for _ in cols]
-        self.calculated_matrix = [[None for _ in rows] for _ in cols]
+        # self.calculated_matrix = [[None for _ in rows] for _ in cols]
 
     def calculate(self, formula: Formula) -> CalculatedValue:
         def recover(exc):
@@ -59,17 +59,19 @@ class Table:
             logger.warning(f"Got parsing error: {e}")
             return CalculationError
 
-    def set(self, h: int, w: int, formula: Formula) -> CalculatedValue:
+    def set(self, col: int, row: int, formula: Formula) -> CalculatedValue:
         value = self.calculate(formula)
-        self.formula_matrix[h][w] = formula
-        self.calculated_matrix[h][w] = value
+        self.formula_matrix[col][row] = formula
+        # self.calculated_matrix[h][w] = value
         return value
 
-    def get_formula(self, h: int, w: int) -> Formula:
-        return self.formula_matrix[h][w]
+    def get_formula(self, col: int, row: int) -> Formula:
+        return self.formula_matrix[col][row]
 
-    def get_calculated(self, h: int, w: int) -> CalculatedValue:
-        return self.calculated_matrix[h][w]
+    def get_calculated(self, col: int, row: int) -> CalculatedValue:
+        value = self.calculate(self.formula_matrix[col][row])
+        return value
+        # return self.calculated_matrix[col][row]
 
     def get_cell_formula(self, cell: CellRef) -> Formula:
         return self.get_formula(*self.cell_index(cell))
@@ -80,8 +82,8 @@ class Table:
     def cell_index(self, cell: CellRef) -> CellIdx:
         if isinstance(cell, tuple):
             try:
-                w = self.cols.index(cell[0])
-                h = self.rows.index(cell[1])
+                col = self.cols.index(cell[0])
+                row = self.rows.index(cell[1])
             except IndexError:
                 raise ValueError(f"Cell {cell} isn't present")
         else:
@@ -89,8 +91,8 @@ class Table:
             if not match:
                 raise ValueError(f"Cell {cell} has invalid format")
             try:
-                w = self.cols.index(match.group(1))
-                h = self.rows.index(match.group(2))
+                col = self.cols.index(match.group(1))
+                row = self.rows.index(match.group(2))
             except IndexError:
                 raise ValueError(f"Cell {cell} isn't present")
-        return h, w
+        return col, row
