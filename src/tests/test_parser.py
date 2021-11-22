@@ -1,5 +1,4 @@
 import pytest
-
 from antlr4 import CommonTokenStream, InputStream
 
 from dist.ExcelLexer import ExcelLexer

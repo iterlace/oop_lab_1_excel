@@ -4,7 +4,6 @@ import sys
 from PyQt6.QtGui import QAction
 from PyQt6.QtWidgets import QApplication, QMainWindow, QMenu, QMessageBox
 
-
 from table.widgets import TableWidget
 
 
@@ -75,7 +74,7 @@ class MainWindow(QMainWindow):
             "Про програму",
             f"Версія: невизначена\n"
             f"Розроблено: Джоном Доу\n"
-            f"Вихідний код: https://github.com/iterlace/oop_lab_1_excel"
+            f"Вихідний код: https://github.com/iterlace/oop_lab_1_excel",
         )
 
     def on_help(self):

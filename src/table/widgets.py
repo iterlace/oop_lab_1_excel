@@ -1,4 +1,3 @@
-import string
 import functools
 
 from PyQt6.QtWidgets import QFileDialog, QMessageBox, QTableWidget, QTableWidgetItem
@@ -6,7 +5,7 @@ from PyQt6.QtWidgets import QFileDialog, QMessageBox, QTableWidget, QTableWidget
 from table import Table
 from table.serializer import DeserializationError, SerializationError, Serializer
 from table.types import CalculatedValue, CalculationError
-from table.utils import cols_generator, int_to_col, rows_generator
+from table.utils import cols_generator, rows_generator
 
 
 class TableWidget(QTableWidget):
@@ -29,9 +28,11 @@ class TableWidget(QTableWidget):
         self._set_debug_callbacks()
 
     def _set_debug_callbacks(self):
-        actions = [i for i in dir(self)
-                   if "signal" in type(getattr(self, i)).__name__.lower()]
+        actions = [
+            i for i in dir(self) if "signal" in type(getattr(self, i)).__name__.lower()
+        ]
         for action in actions:
+
             def l(__action):
                 @functools.wraps(l)
                 def inner(*args, **kwargs):

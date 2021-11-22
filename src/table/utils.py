@@ -1,10 +1,9 @@
 from typing import List
-import string
 
 
 def cols_generator(amount: int) -> List[str]:
     result = []
-    for iteration in range(1, amount+1):
+    for iteration in range(1, amount + 1):
         result.append(int_to_col(iteration))
 
     return result
@@ -20,6 +19,6 @@ def int_to_col(i: int) -> str:
 
 def rows_generator(amount: int) -> List[str]:
     result = []
-    for iteration in range(1, amount+1):
+    for iteration in range(1, amount + 1):
         result.append(str(iteration))
     return result
