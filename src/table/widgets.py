@@ -108,7 +108,6 @@ class TableWidget(QTableWidget):
         table = Table(new_cols, new_rows)
         for col_id, col in enumerate(self.table.formula_matrix):
             for row_id, value in enumerate(col):
-                print(col_id, row_id, value)
                 try:
                     table.set(col_id, row_id, value)
                 except IndexError:
