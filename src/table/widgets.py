@@ -12,8 +12,8 @@ class TableWidget(QTableWidget):
     def __init__(self):
         super(TableWidget, self).__init__()
 
-        self.cols = cols_generator(2)
-        self.rows = rows_generator(3)
+        self.cols = cols_generator(10)
+        self.rows = rows_generator(10)
         self.table = Table(self.cols, self.rows)
 
         self.setRowCount(len(self.rows))
