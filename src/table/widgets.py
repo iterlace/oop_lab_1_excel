@@ -12,8 +12,8 @@ class TableWidget(QTableWidget):
     def __init__(self):
         super(TableWidget, self).__init__()
 
-        self.cols = cols_generator(26)
-        self.rows = rows_generator(100)
+        self.cols = cols_generator(2)
+        self.rows = rows_generator(3)
         self.table = Table(self.cols, self.rows)
 
         self.setRowCount(len(self.rows))
@@ -41,6 +41,37 @@ class TableWidget(QTableWidget):
                 return inner
 
             getattr(self, action).connect(l(action))
+
+    def resize_table(self, new_cols, new_rows):
+        table = Table(new_cols, new_rows)
+        for col_id, col in enumerate(self.table.formula_matrix):
+            for row_id, value in enumerate(col):
+                try:
+                    table.set(col_id, row_id, value)
+                except IndexError:
+                    continue
+        self.table = table
+
+    def recalculate(self):
+        """ Recalculates an entire table """
+        for row in range(self.table.nrows):
+            for col in range(self.table.ncols):
+                if item := self.item(row, col):
+                    calculated = self.table.get_calculated(col, row)
+                    self.set(item, self.represent(calculated))
+
+    def set(self, item: QTableWidgetItem, value: str):
+        self.blockSignals(True)
+        item.setText(value)
+        self.blockSignals(False)
+
+    def represent(self, value: CalculatedValue) -> str:
+        if value is CalculationError:
+            return "%#ERR"
+        if value is None:
+            return ""
+
+        return str(value)
 
     def on_save(self):
         filepath, _ = QFileDialog().getSaveFileName(
@@ -72,11 +103,23 @@ class TableWidget(QTableWidget):
             QMessageBox.critical(self, "Error loading table", e.message)
             return
         else:
-            for row_idx, col in enumerate(table.formula_matrix):
-                for col_idx, value in enumerate(col):
+            self.cols = table.cols
+            self.rows = table.rows
+            self.setColumnCount(table.ncols)
+            self.setHorizontalHeaderLabels(table.cols)
+            self.setRowCount(table.nrows)
+            self.setVerticalHeaderLabels(table.rows)
+
+            self.blockSignals(True)
+            self.table = table
+            for row in range(table.nrows):
+                for col in range(table.ncols):
                     item = QTableWidgetItem()
-                    item.setText(value)
-                    self.setItem(row_idx, col_idx, item)
+                    raw_value = table.get_calculated(col, row)
+                    item.setText(self.represent(raw_value))
+                    self.setItem(row, col, item)
+
+            self.blockSignals(False)
 
     def on_enter(self, row, col):
         value = self.table.get_formula(col, row)
@@ -90,6 +133,7 @@ class TableWidget(QTableWidget):
         col, row = item.column(), item.row()
         result = self.table.set(col, row, value)
         self.set(item, self.represent(result))
+        self.recalculate()
 
     def on_cell_change(self, new_row, new_col, old_row, old_col):
         old_item = self.item(old_row, old_col)
@@ -104,16 +148,7 @@ class TableWidget(QTableWidget):
             self.table.get_formula(old_col, old_row),
         )
         self.set(old_item, self.represent(result))
-
-    def resize_table(self, new_cols, new_rows):
-        table = Table(new_cols, new_rows)
-        for col_id, col in enumerate(self.table.formula_matrix):
-            for row_id, value in enumerate(col):
-                try:
-                    table.set(col_id, row_id, value)
-                except IndexError:
-                    continue
-        self.table = table
+        self.recalculate()
 
     def on_add_column(self):
         columns = cols_generator(len(self.cols) + 1)
@@ -121,6 +156,7 @@ class TableWidget(QTableWidget):
         self.setHorizontalHeaderLabels(columns)
         self.resize_table(columns, self.rows)
         self.cols = columns
+        self.recalculate()
 
     def on_add_row(self):
         rows = rows_generator(len(self.rows) + 1)
@@ -128,6 +164,7 @@ class TableWidget(QTableWidget):
         self.setVerticalHeaderLabels(rows)
         self.resize_table(rows, self.cols)
         self.rows = rows
+        self.recalculate()
 
     def on_remove_column(self):
         if len(self.cols) <= 1:
@@ -137,6 +174,7 @@ class TableWidget(QTableWidget):
         self.setHorizontalHeaderLabels(columns)
         self.resize_table(columns, self.rows)
         self.cols = columns
+        self.recalculate()
 
     def on_remove_row(self):
         if len(self.rows) <= 1:
@@ -146,16 +184,4 @@ class TableWidget(QTableWidget):
         self.setVerticalHeaderLabels(rows)
         self.resize_table(self.cols, rows)
         self.rows = rows
-
-    def set(self, item: QTableWidgetItem, value: str):
-        self.blockSignals(True)
-        item.setText(value)
-        self.blockSignals(False)
-
-    def represent(self, value: CalculatedValue) -> str:
-        if value is CalculationError:
-            return "%#ERR"
-        if value is None:
-            return ""
-
-        return str(value)
+        self.recalculate()

@@ -8,6 +8,7 @@ from antlr4.error.ErrorListener import ErrorListener
 from dist.ExcelLexer import ExcelLexer
 from dist.ExcelParser import ExcelParser
 from table.visitor import ExcelVisitor
+from typing import Tuple
 
 from .types import CalculatedValue, CalculationError, CellIdx, CellRef, Formula
 
@@ -71,13 +72,19 @@ class Table:
     def get_calculated(self, col: int, row: int) -> CalculatedValue:
         value = self.calculate(self.formula_matrix[col][row])
         return value
-        # return self.calculated_matrix[col][row]
 
     def get_cell_formula(self, cell: CellRef) -> Formula:
         return self.get_formula(*self.cell_index(cell))
 
     def get_cell_calculated(self, cell: CellRef) -> CalculatedValue:
         return self.get_calculated(*self.cell_index(cell))
+
+    @staticmethod
+    def parse_cell_ref(cell: str) -> Tuple[str, str]:
+        match = cell_ref_mask.match(cell)
+        if not match:
+            raise ValueError(f"Cell {cell} has invalid format")
+        return match.group(1), match.group(2)
 
     def cell_index(self, cell: CellRef) -> CellIdx:
         if isinstance(cell, tuple):
@@ -87,12 +94,10 @@ class Table:
             except IndexError:
                 raise ValueError(f"Cell {cell} isn't present")
         else:
-            match = cell_ref_mask.match(cell)
-            if not match:
-                raise ValueError(f"Cell {cell} has invalid format")
+            match = self.parse_cell_ref(cell)
             try:
-                col = self.cols.index(match.group(1))
-                row = self.rows.index(match.group(2))
+                col = self.cols.index(match[0])
+                row = self.rows.index(match[1])
             except IndexError:
                 raise ValueError(f"Cell {cell} isn't present")
         return col, row
