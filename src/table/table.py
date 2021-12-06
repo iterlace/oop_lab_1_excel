@@ -38,6 +38,9 @@ class Table:
         # self.calculated_matrix = [[None for _ in rows] for _ in cols]
 
     def calculate(self, formula: Formula) -> CalculatedValue:
+        if not formula.strip():
+            return ""
+
         def recover(exc):
             raise exc
 
